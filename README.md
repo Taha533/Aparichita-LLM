@@ -1,4 +1,4 @@
-# Aparichita LLM Fine-Tuning Project
+# Aparichita LLM (Fine-Tuning: Qwen2.5-3B)
 
 This project fine-tunes the `Qwen2.5-3B-Instruct` language model on a custom dataset based on Rabindranath Tagore's story "Aparichita" to generate accurate responses to questions in Bangla and English. The fine-tuned model is used to generate responses for 20 randomly selected questions from the dataset, with results saved in a CSV file.
 
