@@ -58,7 +58,7 @@ The goal is to fine-tune a lightweight, instruction-tuned large language model (
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/aparichita-llm.git
+   git clone https://github.com/Taha533/Aparichita-LLM.git
    cd aparichita-llm
    ```
 2. Create a Conda environment:
