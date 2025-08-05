@@ -1,0 +1,153 @@
+# Aparichita LLM Fine-Tuning Project
+
+This project fine-tunes the `Qwen2.5-3B-Instruct` language model on a custom dataset based on Rabindranath Tagore's story "Aparichita" to generate accurate responses to questions in Bangla and English. The fine-tuned model is used to generate responses for 20 randomly selected questions from the dataset, with results saved in a CSV file.
+
+## Project Overview
+
+The goal is to fine-tune a lightweight, instruction-tuned large language model (`Qwen2.5-3B-Instruct`) using Low-Rank Adaptation (LoRA) to specialize in answering questions about "Aparichita." The dataset (`oporichita.json`) contains 275 prompt-completion pairs in Bangla and English, covering themes, characters, and social issues in the story. The project includes scripts for fine-tuning, testing inference, and generating responses for a sample of 20 questions, saved in a CSV file.
+
+## Dataset
+
+- **File**: `oporichita.json`
+- **Description**: A JSON file containing 275 question-answer pairs about "Aparichita" by Rabindranath Tagore. Questions are in Bangla and English, covering characters (e.g., Anupam, Kalyani, Shumbhunath), themes (e.g., dowry system), and vocabulary (e.g., "গুটি", "অন্তঃপুর").
+- **Format**: Each entry has a `prompt` (question) and `completion` (answer). Example:
+  ```json
+  [
+      {"prompt": "অনুপমের বাবা কী করে জীবিকা নির্বাহ করতেন?", "completion": "ওকালতি"},
+      {"prompt": "What was the profession of Anupam's father?", "completion": "Lawyer"}
+  ]
+  ```
+- **Size**: 275 entries, balanced between Bangla and English.
+
+## Scripts
+
+### 1. `finetune.py`
+- **Purpose**: Fine-tunes the `Qwen2.5-3B-Instruct` model using LoRA on the `oporichita.json` dataset.
+- **Key Features**:
+  - Loads the dataset and splits it into 90% training and 10% validation.
+  - Uses LoRA with `r=32`, `lora_alpha=64`, and `lora_dropout=0.1` for efficient fine-tuning.
+  - Trains for 100 epochs with a learning rate of `5e-5` and batch size of 2 (with gradient accumulation).
+  - Saves the fine-tuned model and tokenizer to `./bangla_qwen`.
+- **Output**: Fine-tuned model in `./bangla_qwen`.
+
+### 2. `inference.py`
+- **Purpose**: Tests the fine-tuned model with a predefined set of 8 questions (4 Bangla, 4 English) about "Aparichita."
+- **Key Features**:
+  - Loads the model from `./bangla_qwen_50_epochs`.
+  - Generates responses with sampling (`do_sample=True`, `temperature=0.6`, `max_length=150`).
+  - Prints prompt-response pairs to the console.
+- **Output**: Console output of questions and generated responses.
+
+### 3. `generate_results.py`
+- **Purpose**: Generates responses for 20 randomly selected questions from `oporichita.json` and saves them to a CSV file.
+- **Key Features**:
+  - Loads 20 prompts (randomly if dataset >20 entries, else all available).
+  - Generates responses with sampling (`do_sample=True`, `temperature=0.6`, `max_length=400`).
+  - Saves results to `output.csv` with columns `Prompt` and `Response`.
+- **Output**: `output.csv` with 20 prompt-response pairs.
+
+## Setup Instructions
+
+### Prerequisites
+- **Hardware**: NVIDIA GPU with CUDA support (e.g., RTX 3090 with 24GB VRAM).
+- **Software**:
+  - Python 3.10+
+  - CUDA 11.7+ (for GPU acceleration)
+  - Conda or virtualenv for environment management
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/aparichita-llm.git
+   cd aparichita-llm
+   ```
+2. Create a Conda environment:
+   ```bash
+   conda create -n LLM python=3.10.11
+   conda activate LLM
+   ```
+3. Install dependencies:
+   ```bash
+   pip install torch==2.3.1 torchvision==0.18.1
+   pip install transformers>=4.36.0 datasets>=2.20.0 peft>=0.11.0 numpy==1.26.4 sentencepiece>=0.2.0 accelerate>=0.33.0
+   ```
+4. Verify CUDA:
+   ```bash
+   nvidia-smi
+   ```
+
+### Dataset
+- Place `oporichita.json` in the project dataset directory.
+- Ensure it contains at least 20 prompt-completion pairs for `generate_results.py`.
+
+## Usage
+
+### Fine-Tuning
+1. Run the fine-tuning script:
+   ```bash
+   python finetune.py
+   ```
+2. Monitor training logs in `./bangla_qwen/runs/`. Expect decreasing training and validation loss.
+3. The fine-tuned model is saved to `./bangla_qwen`.
+
+### Testing Inference
+1. Run the inference script:
+   ```bash
+   python inference.py
+   ```
+2. Check console output for prompt-response pairs. Example:
+   ```
+   Prompt: অনুপমের বাবা কী করে জীবিকা নির্বাহ করতেন?
+   Response: ওকালতি
+   ```
+
+### Generating Results
+1. Run the results generation script:
+   ```bash
+   python generate_results.py
+   ```
+2. Results are saved to `output.csv`. Example content:
+   ```csv
+   Prompt,Response
+   অনুপমের বাবা কী করে জীবিকা নির্বাহ করতেন?,ওকালতি
+   What was the profession of Anupam's father?,Lawyer
+   ...
+   ```
+
+## Results
+
+- **Output File**: `results_100_epochs_1.csv`
+- **Content**: Contains 20 prompt-response pairs from `oporichita.json`, generated by the fine-tuned model.
+- **Sample Results** (from `results_50_epochs.csv`):
+  ```csv
+  Prompt,Response
+  অনুপমের বাবা কী করে জীবিকা নির্বাহ করতেন?,ওকালতি
+  What was the profession of Anupam's father?,Lawyer
+  গল্পে কোন চরিত্র নারীর শক্তির প্রতীক?,কল্যাণী
+  ```
+- **Notes**:
+  - Some responses in `output.csv` were incorrect. Increasing epochs to 100 and adjusting `max_length=400` in `generate_results.py` aims to improve performance.
+  - Responses are expected to be accurate but not all the time, but with more data and training it is expected to answer properly for "Aparichita"-related questions.
+
+## Troubleshooting
+
+- **CUDA Out-of-Memory**: Reduce `per_device_train_batch_size=1` or increase `gradient_accumulation_steps=8` in `finetune.py`.
+- **Verbose Logging**:
+  ```bash
+  TRANSFORMERS_VERBOSITY=info python generate_results.py
+  ```
+
+## Project Structure
+
+```
+aparichita-llm/
+├── dataset   
+|   ├── oporichita.json     # Dataset with 275 prompt-completion pairs
+├── results   
+|   ├── output.csv 
+├── finetune.py              # Script for fine-tuning the model
+├── inference.py             # Script for testing inference with 8 questions
+├── generate_results.py      # Script to generate and save 20 responses
+├── bangla_qwen/             # Directory with fine-tuned model and tokenizer
+└── README.md                # Project documentation
+```

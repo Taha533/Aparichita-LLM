@@ -1,0 +1,31 @@
+
+Prompt: অনুপমের বাবা কী করে জীবিকা নির্বাহ করতেন?
+Response: ওকালতি
+
+Prompt: What was the profession of Anupam's father?
+Response: Lawyer
+
+
+Prompt: শুম্ভুনাথবাবু কেন গহনা খুলে আনলেন?
+Response: অনুপমের মামার অনুরোধে যাচাইয়ের জন্য
+
+Prompt: What trait is dominant in Anupam’s uncle’s character?
+Response: He forced himself upon Kalyani, treated the bride’s family rudely, and demanded money from Anupam
+
+Prompt: What was the past of Shumbhunath’s family?
+Response: It was prosperous, filled with Lakshmi’s blessings
+
+Prompt: শুম্ভুনাথবাবু কেন গহনা খুলে আনলেন?
+Response: �
+
+Prompt: What trait is dominant in Anupam’s uncle’s character?
+Response: The uncle’s dominant trait of greed for dowry
+
+Prompt: Why didn’t Anupam protest at the wedding?
+Response: To challenge Anupam’s groom’s authority
+
+Prompt: অনুপমের বাবা কীভাবে অর্থ উপার্জন করেছিলেন?
+Response: ওকালতি করে প্রচুর টাকা রোজগার করেছিলেন
+
+Prompt: গল্পে কোন চরিত্র নারীর শক্তির প্রতীক?
+Response: কল্যাণী
